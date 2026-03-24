@@ -1,0 +1,17 @@
+@import "tailwindcss";
+
+/* Hide default dd/mm/yyyy placeholder in date inputs */
+
+/* Chrome, Safari, Edge */
+input[type="date"]:required:invalid::-webkit-datetime-edit {
+  color: transparent;
+}
+
+input[type="date"]:focus::-webkit-datetime-edit {
+  color: inherit;
+}
+
+/* Firefox */
+input[type="date"]:required:invalid::-moz-placeholder-shown {
+  color: transparent;
+}

@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lance Hotel Admin</title>
+  <link href="./output.css" rel="stylesheet">
+   <style>
+    .page { display: none; }
+    .page.active { display: block; }
+   </style>
+   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+   <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+   <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+</head>
+<body class="bg-gray-100 font-sans">
+
+   <div class="flex min-h-screen">
+
+    <!-- Sidebar -->
+    <aside class="fixed top-0 left-0 h-screen w-64 bg-gray-900 text-white flex flex-col">
+      <div class="p-6 text-2xl font-bold border-b border-gray-700">Admin</div>
+      <nav class="flex-1 p-4 space-y-2 text-sm">
+        <a href="#statistics" class="block px-4 py-2 rounded hover:bg-gray-700" onclick="show('statistics')">Dashboard</a>
+        <a href="#reservations" class="block px-4 py-2 rounded hover:bg-gray-700" onclick="show('reservations')">Reservations</a>
+        <a href="#rooms" class="block px-4 py-2 rounded hover:bg-gray-700" onclick="show('rooms')">Rooms</a>
+        <a href="#payments" class="block px-4 py-2 rounded hover:bg-gray-700" onclick="show('payments')">Financials</a>
+        <a href="#logs" class="block px-4 py-2 rounded hover:bg-gray-700" onclick="show('logs')">Activity Logs</a>
+      </nav>
+      <div class="p-4 border-t border-gray-700 text-xs text-gray-400">Admin: Lancey</div>
+    </aside>
+
+
+    <!-- Top Bar -->
+    <header class="flex justify-end items-center bg-white p-4 shadow fixed top-0 right-0 left-64">
+      <div class="flex items-center space-x-6">
+        <!-- Profile -->
+        <div class="flex items-center space-x-2 mr-[120px]">
+          <img src="man-face-black-linear-cartoon-icon-user-isolated-white-background-ai-generated_1095381-16809.avif" alt="Profile" class="w-10 h-10 rounded-full">
+          <div class="text-right">
+            <p class="text-l font-bold text-grey-900">Lance Samonte</p>
+            <p class="text-sm text-grey-500 mr-[60px]">Admin</p>
+          </div>
+        </div>
+        <!-- Notification Icon -->
+        <button class="relative ml-[40px]">
+          <ion-icon name="notifications-outline" class="text-2xl text-grey-900"></ion-icon>
+          <!-- Red dot -->
+          <span class="absolute top-0 right-0 inline-block w-2 h-2 bg-red-500 rounded-full"></span>
+        </button>
+        <!-- Settings Icon -->
+        <button>
+          <ion-icon name="settings-outline" class="text-2xl text-grey-900 mr-[5px]"></ion-icon>
+        </button>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-1 p-6 ml-64">
+
+      <!-- Quick Statistics -->
+      <div id="statistics" class="page active space-y-6">
+        <h2 class="text-xl font-bold text-gray-800">Dashboard</h2>
+        <div class="grid grid-cols-4 gap-6 mt-[40px]">
+          <div class="bg-white p-4 rounded-lg shadow  h-[110px] "><p class="text-sm text-gray-500 text-center">New Bookings</p><p class="text-2xl font-bold text-center">840 <span class="text-green-500 text-sm text-center">↑ 8.7%</span></p></div>
+          <div class="bg-white p-4 rounded-lg shadow"><p class="text-sm text-gray-500 text-center">Check-In</p><p class="text-2xl font-bold text-center">231 <span class="text-green-500 text-sm text-center">↑ 3.56%</span></p></div>
+          <div class="bg-white p-4 rounded-lg shadow"><p class="text-sm text-gray-500 text-center">Check-Out</p><p class="text-2xl font-bold text-center">124 <span class="text-red-500 text-sm text-center">↓ 1.06%</span></p></div>
+          <div class="bg-gray-700 p-4 rounded-lg shadow"><p class="text-sm text-white text-center">Total Revenue</p><p class="text-2xl text-white font-bold text-center">₱123,980 <span class="text-green-500 text-sm text-center">↑ 5.7%</span></p></div>
+        </div>
+
+        <div class="bg-white p-6 rounded-lg shadow ">
+          <h3 class="text-lg font-bold mb-4 text-gray-800 text-center">Room Availability</h3>
+        <div class="grid grid-cols-4 gap-6 text-center">
+          <div class="bg-gray-50 p-4 rounded-lg">
+             <p class="text-sm text-gray-500">Occupied</p>
+             <p class="text-2xl font-bold text-gray-800">286</p>
+          </div>
+           <div class="bg-gray-50 p-4 rounded-lg">
+             <p class="text-sm text-gray-500">Reserved</p>
+             <p class="text-2xl font-bold text-gray-800">87</p>
+          </div>
+         <div class="bg-green-500 p-4 rounded-lg">
+             <p class="text-sm text-white">Available</p>
+             <p class="text-2xl font-bold text-white">32</p>
+          </div>
+          <div class="bg-red-500 p-4 rounded-lg">
+            <p class="text-sm text-white">Not Ready</p>
+             <p class="text-2xl font-bold text-white">13</p>
+        </div>
+        </div> </div>
+
+        <div class="grid grid-cols-4 gap-6">
+          <div class="bg-white p-6 rounded-lg shadow">
+            <h3 class="text-lg font-bold mb-4 text-gray-800">Reservations (Last 7 Days)</h3>
+            <canvas id="reservationChart"></canvas>
+          </div>
+          <div class="bg-white p-6 rounded-lg shadow">
+            <h3 class="text-lg font-bold mb-4 text-gray-800">Reservations (This Month)</h3>
+            <canvas id="monthChart"></canvas>
+            </div>
+          <div class="bg-white p-6 rounded-lg shadow">
+            <h3 class="text-lg font-bold mb-4 text-gray-800">Revenue (Last 6 Months)</h3>
+            <canvas id="revenueChart"></canvas>
+          </div>
+          
+        </div>
+
+  <!-- Overall Rating -->
+<div class="relative">
+  <div class="absolute top-[-50px] right-0 bg-white p-6 rounded-lg shadow w-[350px] h-[400px]">
+    <h3 class="text-lg font-bold mb-4 text-gray-800">Overall Rating</h3>
+    <p class="text-2xl font-bold">4.6 <span class="text-sm text-gray-500">Impressive (2,546 reviews)</span></p>
+    <div class="space-y-4 mt-4">
+      <div>
+        <div class="flex justify-between text-sm text-gray-500">
+          <span>Facilities</span><span>4.4</span>
+        </div>
+        <div class="w-full bg-gray-200 rounded-full h-2">
+          <div class="bg-green-500 h-2 rounded-full" style="width:88%"></div>
+        </div>
+      </div>
+      <div>
+        <div class="flex justify-between text-sm text-gray-500">
+          <span>Cleanliness</span><span>4.7</span>
+        </div>
+        <div class="w-full bg-gray-200 rounded-full h-2">
+          <div class="bg-green-500 h-2 rounded-full" style="width:94%"></div>
+        </div>
+      </div>
+      <div>
+        <div class="flex justify-between text-sm text-gray-500">
+          <span>Services</span><span>4.6</span>
+        </div>
+        <div class="w-full bg-gray-200 rounded-full h-2">
+          <div class="bg-green-500 h-2 rounded-full" style="width:92%"></div>
+        </div>
+      </div>
+      <div>
+        <div class="flex justify-between text-sm text-gray-500">
+          <span>Comfort</span><span>4.8</span>
+        </div>
+        <div class="w-full bg-gray-200 rounded-full h-2">
+          <div class="bg-green-500 h-2 rounded-full" style="width:96%"></div>
+        </div>
+      </div>
+      <div>
+        <div class="flex justify-between text-sm text-gray-500">
+          <span>Location</span><span>4.5</span>
+        </div>
+        <div class="w-full bg-gray-200 rounded-full h-2">
+          <div class="bg-green-500 h-2 rounded-full" style="width:90%"></div>
+        </div>
+      </div>
+      <div>
+        <div class="flex justify-between text-sm text-gray-500">
+          <span>Staff</span><span>4.9</span>
+        </div>
+        <div class="w-full bg-gray-200 rounded-full h-2">
+          <div class="bg-green-500 h-2 rounded-full" style="width:90%"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+        <div class="bg-white p-6 rounded-lg shadow w-[1100px] h-[340px] -mt-[120px] ml-[20px] inline-block">
+          <h3 class="text-lg font-bold mb-4 text-gray-800">Booking by Platform</h3>
+          <canvas id="platformChart"></canvas>
+        </div>
+      </div>
+
+      
+
+      <!-- Other pages placeholders -->
+      <div id="reservations" class="page"><h2 class="text-xl font-bold">Reservations</h2>
+
+ <!-- Container 1: Create Reservation -->
+<!-- Reservation Form -->
+<div class="flex justify-center mt-[50px]">
+  <div class="bg-white p-6 rounded-lg shadow w-[900px]">
+    <h3 class="text-xl font-bold mb-6 text-center">Create Reservation</h3>
+    
+    <form id="createForm" class="flex flex-col space-y-6">
+<!-- Check In / Check Out  -->
+<div>
+  <label class="block text-gray-700 font-semibold mb-1">
+    <ion-icon name="calendar-outline"></ion-icon> Check In - Check Out
+  </label>
+  <div class="flex space-x-4">
+    <input type="date" id="checkIn" 
+           placeholder="Check In"
+           class="border-b w-full p-2 focus:outline-none focus:border-blue-500">
+    <input type="date" id="checkOut" 
+           placeholder="Check Out"
+           class="border-b w-full p-2 focus:outline-none focus:border-blue-500">
+  </div>
+</div>
+
+
+      <!-- Guests -->
+      <div>
+        <label class="block text-gray-700 font-semibold mb-1"><ion-icon name="people-outline"></ion-icon> Guests</label>
+        <input type="number" placeholder="Number of Guests" class="border-b w-full p-2 focus:outline-none focus:border-blue-500">
+      </div>
+
+      <!-- Room Type -->
+      <div>
+        <label class="block text-gray-700 font-semibold mb-1"><ion-icon name="bookmark-outline"></ion-icon> Room Type</label>
+        <div class="flex space-x-6">
+          <label class="flex items-center space-x-2">
+            <input type="radio" name="roomType" value="Standard" class="accent-blue-500" checked>
+            <span>Standard</span>
+          </label>
+          <label class="flex items-center space-x-2">
+            <input type="radio" name="roomType" value="Deluxe" class="accent-blue-500">
+            <span>Deluxe</span>
+          </label>
+          <label class="flex items-center space-x-2">
+            <input type="radio" name="roomType" value="Suite" class="accent-blue-500">
+            <span>Suite</span>
+          </label>
+        </div>
+      </div>
+
+      <!-- Room Number -->
+      <div>
+        <label class="block text-gray-700 font-semibold mb-1"><ion-icon name="caret-down-circle-outline"></ion-icon> Room Number</label>
+        <input type="number" placeholder="Enter Room Number" class="border-b w-full p-2 focus:outline-none focus:border-blue-500">
+      </div>
+
+      <!-- Booking Source -->
+      <div>
+        <label class="block text-gray-700 font-semibold mb-1"><ion-icon name="wallet-outline"></ion-icon> Booking Source</label>
+        <select class="border-b w-full p-2 focus:outline-none focus:border-blue-500">
+          <option>Online</option>
+          <option>Walk-in</option>
+        </select>
+      </div>
+
+      <!-- Special Requests -->
+      <div>
+        <label class="block text-gray-700 font-semibold mb-1"><ion-icon name="happy-outline"></ion-icon> Special Requests</label>
+        <textarea placeholder="Enter Here" class="border-b w-full p-2 focus:outline-none focus:border-blue-500"></textarea>
+      </div>
+
+<!-- Room Price + Total  -->
+<div class="flex justify-between items-center">
+  <div>
+    <p class="text-gray-700 font-semibold"><ion-icon name="pricetag-outline"></ion-icon> Room Price (per night)</p>
+    <p id="roomPrice" class="text-lg font-bold">₱1,800.00</p>
+  </div>
+  <div>
+    <p class="text-gray-700 font-semibold"><ion-icon name="pricetags-outline"></ion-icon> Total</p>
+    <p id="totalPrice" class="text-lg font-bold">₱1,800.00</p>
+  </div>
+</div>
+
+
+      <!-- Availability -->
+      <p class="text-red-500 font-semibold">lagay dito ung promt to show how many available rooms are left!</p>
+
+      <!-- Buttons -->
+      <div class="flex space-x-4">
+        <button type="submit" class="bg-green-500 text-white px-4 py-2 rounded w-full">Create Reservation</button>
+        <button type="reset" class="bg-gray-500 text-white px-4 py-2 rounded w-full">Clear Form</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+ const roomPriceEl = document.getElementById('roomPrice');
+const totalPriceEl = document.getElementById('totalPrice');
+const nightsField = document.getElementById('nightsField'); 
+const roomTypeRadios = document.querySelectorAll('input[name="roomType"]');
+const checkIn = document.getElementById('checkIn');
+const checkOut = document.getElementById('checkOut');
+
+let basePrice = 1800; 
+let nights = 1;
+
+function updatePrices() {
+  roomPriceEl.textContent = `₱${basePrice.toLocaleString()}.00`;
+  totalPriceEl.textContent = `₱${(basePrice * nights).toLocaleString()}.00`;
+}
+
+function calculateNightsFromDates() {
+  if (checkIn.value && checkOut.value) {
+    const inDate = new Date(checkIn.value);
+    const outDate = new Date(checkOut.value);
+    const diffTime = outDate - inDate;
+    const diffDays = diffTime / (1000 * 60 * 60 * 24);
+    if (diffDays > 0) {
+      nights = diffDays;
+      if (nightsField) nightsField.value = nights; 
+      updatePrices();
+    }
+  } else {
+    nights = 1; 
+    updatePrices();
+  }
+}
+
+// Room type change para sa pricesa
+roomTypeRadios.forEach(radio => {
+  radio.addEventListener('change', () => {
+    if (radio.value === 'Standard') basePrice = 1800;
+    else if (radio.value === 'Deluxe') basePrice = 2300;
+    else if (radio.value === 'Suite') basePrice = 3000;
+    calculateNightsFromDates(); // recalc with new rate para sa diff room types
+  });
+});
+
+checkIn.addEventListener('change', calculateNightsFromDates);
+checkOut.addEventListener('change', calculateNightsFromDates);
+
+// Initialize
+updatePrices();
+
+</script>
+
+
+
+
+
+  <!-- Container 2: Search & Filter -->
+   <div class="flex justify-center mt-[50px]">
+  <div class="bg-white p-6 rounded-lg shadow mb-8 w-[100px]">
+    <h3 class="text-lg font-bold mb-4">Search & Filter Reservations</h3>
+    <div class="flex space-x-4">
+      <input type="text" id="searchGuest" placeholder="Room Number" class="border p-2 rounded w-1/4">
+      <input type="date" id="searchDate" class="border p-2 rounded w-1/4">
+      <select id="searchStatus" class="border p-2 rounded w-1/4">
+        <option value="">All</option><option>Pending</option><option>Confirmed</option><option>Cancelled</option>
+      </select>
+      <button onclick="applyFilter()" class="bg-blue-500 text-white px-4 py-2 rounded">Apply Filter</button>
+      <button onclick="resetFilter()" class="bg-gray-500 text-white px-4 py-2 rounded">Reset Filter</button>
+    </div>
+  </div>
+</div>
+
+  <!-- Container 3: Live Reservation Feed -->
+<div class="flex justify-center mt-10">
+  <div class="bg-white p-6 rounded-lg shadow mb-8 w-[700px]">
+    <h3 class="text-lg font-bold mb-4">Live Reservation Feed</h3>
+    <div id="liveFeed" class="space-y-2 max-h-64 overflow-y-auto"></div>
+  </div>
+</div>
+
+
+  <!-- Container 4: Reservation List -->
+<div class="bg-white p-6 rounded-lg shadow mb-8">
+  <h3 class="text-lg font-bold mb-4">Reservation List</h3>
+  <table class="w-full border-collapse">
+    <thead>
+      <tr class="bg-gray-200">
+        <th class="border p-2 text-center">ID</th>
+        <th class="border p-2 text-center">Guest</th>
+        <th class="border p-2 text-center">Room</th>
+        <th class="border p-2 text-center">Check-in</th>
+        <th class="border p-2 text-center">Check-out</th>
+        <th class="border p-2 text-center">Method</th>
+        <th class="border p-2 text-center">Status</th>
+        <th class="border p-2 text-center">Actions</th>
+      </tr>
+    </thead>
+    <tbody id="reservationTable"></tbody>
+  </table>
+</div>
+
+<!-- Container 5: Reservation Details (Modal) -->
+<div id="detailsModal" class="modal">
+  <div class="modal-content">
+    <h3 class="text-lg font-bold mb-4">Reservation Details</h3>
+    <div id="detailsContent"></div>
+    <div class="mt-4 flex space-x-2">
+      <button onclick="confirmReservationFromModal()" class="bg-green-500 text-white px-4 py-2 rounded">Confirm</button>
+      <button onclick="updateReservationFromModal()" class="bg-yellow-500 text-white px-4 py-2 rounded">Update</button>
+      <button onclick="cancelReservationFromModal()" class="bg-red-500 text-white px-4 py-2 rounded">Cancel</button>
+      <button onclick="closeModal()" class="bg-gray-500 text-white px-4 py-2 rounded">Close</button>
+    </div>
+  </div>
+</div>
+
+<style>
+  .badge { padding: 0.25rem 0.5rem; border-radius: 0.25rem; font-size: 0.75rem; font-weight: 600; }
+  .badge-pending { background-color: #fbbf24; color: #fff; }
+  .badge-confirmed { background-color: #22c55e; color: #fff; }
+  .badge-cancelled { background-color: #ef4444; color: #fff; }
+  .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); justify-content: center; align-items: center; }
+  .modal-content { background: #fff; padding: 2rem; border-radius: 0.5rem; width: 600px; max-height: 80vh; overflow-y: auto; }
+</style>
+
+
+</div>
+
+
+      
+      <div id="rooms" class="page"><h2 class="text-xl font-bold">Rooms</h2></div>
+      <div id="payments" class="page"><h2 class="text-xl font-bold">Payments</h2></div>
+      <div id="logs" class="page"><h2 class="text-xl font-bold">Activity Logs</h2></div>
+
+    </main>
+  </div>
+
+  <!-- Page toggle -->
+ <script>
+  // Toggle between pages
+  function show(id) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+  }
+
+  // Revenue chart (line)
+  new Chart(document.getElementById('revenueChart'), {
+    type: 'line',
+    data: {
+      labels: ['Dec', 'Jan', 'Feb', 'Mar', 'Apr', 'May'],
+      datasets: [{
+        label: 'Revenue',
+        data: [200000, 250000, 315060, 280000, 290000, 300000],
+        borderColor: '#10b981', // Tailwind green-500 hayop na yan need iconfigure pa
+        backgroundColor: '#10b981',
+        fill: false,
+        tension: 0.3
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: { legend: { display: false } },
+      scales: { y: { beginAtZero: false } }
+    }
+  });
+
+  // Reservations chart (bar)
+  new Chart(document.getElementById('reservationChart'), {
+    type: 'bar',
+    data: {
+      labels: ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'],
+      datasets: [
+        { label: 'Booked', data: [40,50,60,30,70,80,55], backgroundColor: '#10b981' },
+        { label: 'Canceled', data: [5,10,8,3,12,7,6], backgroundColor: '#ef4444' } // Tailwind red-500 fckthishsit 
+      ]
+    },
+    options: {
+      responsive: true,
+      scales: {
+        x: { stacked: true },
+        y: { stacked: true, beginAtZero: true }
+      }
+    }
+  });
+
+    // Reservations chart (This Month - bar)
+  new Chart(document.getElementById('monthChart'), {
+    type: 'bar',
+    data: {
+      labels: ['Week 1','Week 2','Week 3','Week 4'],
+      datasets: [
+        { label: 'Booked', data: [120, 150, 180, 140], backgroundColor: '#3b82f6' },
+        { label: 'Canceled', data: [15, 20, 40, 12], backgroundColor: '#f59e0b' }
+      ]
+    },
+    options: {
+      responsive: true,
+      scales: {
+        y: { beginAtZero: true }
+      }
+    }
+  });
+
+// Booking by platform chart (doughnut)
+new Chart(document.getElementById('platformChart'), {
+  type: 'doughnut',
+  data: {
+    labels: ['Direct', 'Booking.com', 'Agoda', 'Airbnb', 'Hotels.com', 'Others'],
+    datasets: [{
+      data: [61, 12, 11, 9, 5, 2],
+      backgroundColor: [
+        '#10b981', // Direct - green
+        '#3b82f6', // Booking.com - blue
+        '#f59e0b', // Agoda - amber
+        '#8b5cf6', // Airbnb - purple
+        '#ef4444', // Hotels.com - red
+        '#6b7280'  // Others - gray
+      ]
+    }]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    layout: {
+      padding: {
+        top: -40,
+        bottom: 70,
+        left: 0,
+        right: 200
+      }
+    },
+    plugins: {
+      legend: {
+        position: 'right',
+        align: 'center',
+        labels: {
+          font: { size: 15 },
+          color: '#374151',
+          padding: 50,
+          generateLabels: function(chart) {
+            const data = chart.data;
+            if (data.labels.length && data.datasets.length) {
+              return data.labels.map((label, i) => {
+                const value = data.datasets[0].data[i];
+                const backgroundColor = data.datasets[0].backgroundColor[i];
+                return {
+                  text: `${label} (${value})`, 
+                  fillStyle: backgroundColor,
+                  strokeStyle: backgroundColor,
+                  lineWidth: 2,
+                  hidden: isNaN(value),
+                  index: i
+                };
+              });
+            }
+            return [];
+          }
+        }
+      }
+    }
+  }
+});
+
+</script>
+
+</body>
+
+  <script src="reservation.js"></script>
+</html>
