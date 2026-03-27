@@ -727,7 +727,7 @@ document.getElementById("confirm-delete").addEventListener("click", () => {
       </tr>
     </thead>
     <tbody id="payment-rows" class="divide-y divide-gray-200">
-      <!-- Rows will be added dynamically -->
+      <!-- Rows will be added based sa inputs ng user -->
     </tbody>
   </table>
 </div>
@@ -745,7 +745,6 @@ document.getElementById("confirm-delete").addEventListener("click", () => {
     
     Refunded Payments
 
-    <!-- Gradient underline accent -->
     <span class="absolute left-0 -bottom-2 w-full h-1 
                  bg-gradient-to-r from-gray-900 to-gray-600 rounded"></span>
   </h2>
@@ -846,8 +845,8 @@ document.getElementById("close-view").addEventListener("click", () => {
 // Handle Refund button → only show popup
 paymentRows.addEventListener("click", function(e) {
   if (e.target.classList.contains("refund-btn")) {
-    rowToRefund = e.target.closest("tr"); // store row reference
-    document.getElementById("refund-popup").classList.remove("hidden"); // show confirmation popup
+    rowToRefund = e.target.closest("tr"); 
+    document.getElementById("refund-popup").classList.remove("hidden"); 
   }
 });
 
@@ -861,19 +860,17 @@ document.getElementById("cancel-refund").addEventListener("click", () => {
 document.getElementById("proceed-refund").addEventListener("click", () => {
   if (rowToRefund) {
     refundRows.appendChild(rowToRefund);
-    // Remove old action buttons
     rowToRefund.querySelector("td:last-child").remove();
-    // Update status to Cancelled
     rowToRefund.querySelector("span").textContent = "Cancelled";
     rowToRefund.querySelector("span").className = "px-3 py-1 rounded-full text-sm font-semibold bg-red-100 text-red-700";
 
-    // Add Undo button
+    // Undo button
     const undoCell = document.createElement("td");
     undoCell.className = "px-6 py-4 text-center";
     undoCell.innerHTML = `<button class="undo-btn bg-gray-500 text-white px-3 py-1 rounded hover:bg-gray-600 transition">Undo</button>`;
     rowToRefund.appendChild(undoCell);
 
-    rowToRefund = null; // reset
+    rowToRefund = null; 
   }
   document.getElementById("refund-popup").classList.add("hidden");
 });
@@ -881,12 +878,9 @@ document.getElementById("proceed-refund").addEventListener("click", () => {
 refundRows.addEventListener("click", function(e) {
   if (e.target.classList.contains("undo-btn")) {
     const row = e.target.closest("tr");
-    // Remove Undo button cell
     row.querySelector("td:last-child").remove();
-    // Restore status
     row.querySelector("span").textContent = "Paid";
     row.querySelector("span").className = "px-3 py-1 rounded-full text-sm font-semibold bg-green-100 text-green-700";
-    // Restore action buttons
     const actionCell = document.createElement("td");
     actionCell.className = "px-6 py-4 flex justify-center gap-2";
     actionCell.innerHTML = `
@@ -894,7 +888,6 @@ refundRows.addEventListener("click", function(e) {
       <button class="refund-btn bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 transition">Refund</button>
     `;
     row.appendChild(actionCell);
-    // Move back to payments table
     paymentRows.appendChild(row);
   }
 });
@@ -1111,7 +1104,7 @@ new Chart(document.getElementById('platformChart'), {
   }
 });
 
-// Sample data: replace with dynamic values later
+// Sample data lang 
 const roomTypesData = {
   labels: ["Standard", "Deluxe", "Suite"],
   datasets: [{
@@ -1138,7 +1131,7 @@ const config = {
     maintainAspectRatio: false,
     plugins: {
       legend: {
-        display: false   // 🚫 hide dataset legend completely
+        display: false   
       },
       tooltip: {
         callbacks: {
