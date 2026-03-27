@@ -30,11 +30,12 @@ function renderTable(data = reservations) {
         <td class="border p-2 text-center">${r.checkout}</td>
         <td class="border p-2 text-center">${r.method}</td>
         <td class="border p-2 text-center">${statusBadge(r.status)}</td>
-        <td class="border p-2 space-x-2">
-          <button onclick="viewReservation(${r.id})" class="bg-blue-500 text-white px-2 py-1 rounded">View</button>
-          <button onclick="editReservation(${r.id})" class="bg-yellow-500 text-white px-2 py-1 rounded">Edit</button>
-          <button onclick="confirmReservation(${r.id})" class="bg-green-500 text-white px-2 py-1 rounded">Confirm</button>
-          <button onclick="cancelReservation(${r.id})" class="bg-red-500 text-white px-2 py-1 rounded">Cancel</button>
+        <td class="border p-2">
+          <div class="flex justify-center space-x-2">
+            <button onclick="viewReservation(${r.id})" class="bg-blue-500 text-white px-2 py-1 rounded">View</button>
+            <button onclick="editReservation(${r.id})" class="bg-yellow-500 text-white px-2 py-1 rounded">Edit</button>
+            <button onclick="cancelReservation(${r.id})" class="bg-red-500 text-white px-2 py-1 rounded">Cancel</button>
+          </div>
         </td>
       </tr>
     `;
@@ -43,18 +44,21 @@ function renderTable(data = reservations) {
 
 // View reservation details
 function viewReservation(id) {
-  const r = reservations.find(x=>x.id===id);
-  if(!r) return;
+  const r = reservations.find(x => x.id === id);
+  if (!r) return;
   const modal = document.getElementById('detailsModal');
   const content = document.getElementById('detailsContent');
   content.innerHTML = `
-    <p><strong>ID:</strong> ${r.id}</p>
-    <p><strong>Guest:</strong> ${r.guest}</p>
-    <p><strong>Room:</strong> ${r.room}</p>
-    <p><strong>Check-in:</strong> ${r.checkin}</p>
-    <p><strong>Check-out:</strong> ${r.checkout}</p>
-    <p><strong>Method:</strong> ${r.method}</p>
-    <p><strong>Status:</strong> ${r.status}</p>
+    <div class="text-center">
+      <p><strong>ID:</strong> ${r.id}</p>
+      <p><strong>Guest Name:</strong> ${r.guest}</p>
+      <p><strong>Room:</strong> ${r.room}</p>
+      <p><strong>Room Type:</strong> ${r.roomType || ""}</p>
+      <p><strong>Check-in:</strong> ${r.checkin}</p>
+      <p><strong>Check-out:</strong> ${r.checkout}</p>
+      <p><strong>Method:</strong> ${r.method}</p>
+      <p><strong>Status:</strong> ${r.status}</p>
+    </div>
   `;
   modal.style.display = "flex";
 }
@@ -69,14 +73,12 @@ function editReservation(id) {
   const form = document.getElementById('editForm').elements;
   form[0].value = r.guest;
   form[1].value = r.contact || "";
-  form[2].value = r.email || "";
   form[3].value = r.room;
   form[4].value = r.roomType || "Single";
   form[5].value = r.guests || 1;
   form[6].value = r.checkin;
   form[7].value = r.checkout;
   form[8].value = r.method;
-  form[9].value = r.requests || "";
   form[10].value = r.status;
   form[0].dataset.editId = id;
 }
@@ -88,39 +90,23 @@ function confirmReservation(id) {
   renderTable();
 }
 
-// Cancel reservation
+let cancelTargetId = null;
+
 function cancelReservation(id) {
-  if(confirm("Are you sure you want to cancel this reservation?")) {
-    const r = reservations.find(x=>x.id===id);
-    if(r) r.status = "Cancelled";
-    renderTable();
-  }
+  cancelTargetId = id;
+  document.getElementById('cancelModal').classList.remove('hidden');
 }
 
-// Create reservation
-document.getElementById('createForm').addEventListener('submit', e=>{
-  e.preventDefault();
-  const f = e.target.elements;
-  currentId++;
-  reservations.push({
-    id: currentId,
-    guest: f[0].value,
-    contact: f[1].value,
-    email: f[2].value,
-    room: f[3].value,
-    roomType: f[4].value,
-    guests: f[5].value,
-    checkin: f[6].value,
-    checkout: f[7].value,
-    method: f[8].value,
-    requests: f[9].value,
-    status: f[10].value
-  });
+document.getElementById('confirmCancelBtn').addEventListener('click', () => {
+  const r = reservations.find(x => x.id === cancelTargetId);
+  if (r) r.status = "Cancelled";
   renderTable();
-  e.target.reset();
+  document.getElementById('cancelModal').classList.add('hidden');
 });
 
-
+document.getElementById('closeCancelBtn').addEventListener('click', () => {
+  document.getElementById('cancelModal').classList.add('hidden');
+});
 
 // Filtering
 function applyFilter() {
@@ -143,7 +129,7 @@ function resetFilter() {
 
 // Live feed simulation
 function addLiveReservation() {
-  const names = ["Lance Samonte","Lourence Cortez","Joseph Josephina","Shanna Aniag","Neneng B.", "Mahal mo o Mahal ako"];
+  const names = ["Lance Samonte","Lourence Cortez","Joseph Aniag","Shanna Carreon","Trisha Torres", "Myra Meijas", "Justine Garcia", "Shun Soco", "Ma'am Betong", "Ma'am Quicay"];
   const methods = ["Online","Walk-in"];
   const statuses = ["Pending","Confirmed","Cancelled"];
   currentId++;
@@ -183,5 +169,3 @@ function renderLiveFeed() {
 // Initialize
 renderTable();
 setInterval(addLiveReservation,3000);
-
-
