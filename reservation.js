@@ -2,8 +2,8 @@
 
 // Sample data
 let reservations = [
-  {id:1, guest:"Lance Samonte", room:101, checkin:"2026-03-23", checkout:"2026-03-25", method:"Online", status:"Pending"},
-  {id:2, guest:"Lourence Cortez", room:102, checkin:"2026-03-24", checkout:"2026-03-26", method:"Walk-in", status:"Confirmed"},
+  {id:1, bookingcode: "HVKGHJC", guest:"Lance Samonte", room:101, checkin:"2026-03-23", checkout:"2026-03-25", method:"Online", status:"Pending"},
+  {id:2, bookingcode: "HVKGHJC", guest:"Lourence Cortez", room:102, checkin:"2026-03-24", checkout:"2026-03-26", method:"Walk-in", status:"Confirmed"},
 ];
 
 let currentId = reservations.length;
@@ -24,8 +24,8 @@ function renderTable(data = reservations) {
     tbody.innerHTML += `
       <tr>
         <td class="border p-2 text-center">${r.id}</td>
+        <td class="border p-2 text-center">${r.bookingcode}</td>
         <td class="border p-2 text-center">${r.guest}</td>
-        <td class="border p-2 text-center">${r.room}</td>
         <td class="border p-2 text-center">${r.checkin}</td>
         <td class="border p-2 text-center">${r.checkout}</td>
         <td class="border p-2 text-center">${r.method}</td>
@@ -51,6 +51,7 @@ function viewReservation(id) {
   content.innerHTML = `
     <div class="text-center">
       <p><strong>ID:</strong> ${r.id}</p>
+      <p><strong>Booking Code:</strong> ${r.bookingcode}</p>
       <p><strong>Guest Name:</strong> ${r.guest}</p>
       <p><strong>Room:</strong> ${r.room}</p>
       <p><strong>Room Type:</strong> ${r.roomType || ""}</p>
@@ -66,22 +67,50 @@ function closeModal() {
   document.getElementById('detailsModal').style.display = "none";
 }
 
-// Edit reservation
+// Edit reservation (open modal)
 function editReservation(id) {
-  const r = reservations.find(x=>x.id===id);
-  if(!r) return;
+  const r = reservations.find(x => x.id === id);
+  if (!r) return;
+
   const form = document.getElementById('editForm').elements;
-  form[0].value = r.guest;
-  form[1].value = r.contact || "";
-  form[3].value = r.room;
-  form[4].value = r.roomType || "Single";
-  form[5].value = r.guests || 1;
-  form[6].value = r.checkin;
-  form[7].value = r.checkout;
-  form[8].value = r.method;
-  form[10].value = r.status;
+  form[0].value = r.guest;              // Guest Name
+  form[1].value = r.room;               // Room
+  form[2].value = r.roomType || "Single"; // Room Type
+  form[3].value = r.guests || 1;        // Guests
+  form[4].value = r.checkin;            // Check-in
+  form[5].value = r.checkout;           // Check-out
+  form[6].value = r.method;             // Method
+  form[7].value = r.status;             // Status
+
   form[0].dataset.editId = id;
+
+  document.getElementById('editModal').classList.remove('hidden');
 }
+
+// Confirm edit
+document.getElementById('confirmEditBtn').addEventListener('click', () => {
+  const form = document.getElementById('editForm').elements;
+  const id = parseInt(form[0].dataset.editId);
+  const r = reservations.find(x => x.id === id);
+  if (r) {
+    r.guest = form[0].value;
+    r.room = parseInt(form[1].value);
+    r.roomType = form[2].value;
+    r.guests = parseInt(form[3].value);
+    r.checkin = form[4].value;
+    r.checkout = form[5].value;
+    r.method = form[6].value;
+    r.status = form[7].value;
+  }
+  renderTable();
+  document.getElementById('editModal').classList.add('hidden');
+});
+
+// Cancel edit
+document.getElementById('cancelEditBtn').addEventListener('click', () => {
+  document.getElementById('editModal').classList.add('hidden');
+});
+
 
 // Confirm reservation
 function confirmReservation(id) {
@@ -98,9 +127,11 @@ function cancelReservation(id) {
 }
 
 document.getElementById('confirmCancelBtn').addEventListener('click', () => {
-  const r = reservations.find(x => x.id === cancelTargetId);
-  if (r) r.status = "Cancelled";
-  renderTable();
+  const index = reservations.findIndex(x => x.id === cancelTargetId);
+  if (index !== -1) {
+    reservations.splice(index, 1); // remove the reservation from the array
+  }
+  renderTable(); // re-render table without the removed reservation
   document.getElementById('cancelModal').classList.add('hidden');
 });
 
@@ -146,6 +177,7 @@ function addLiveReservation() {
   if(liveFeed.length>5) liveFeed.pop();
   renderLiveFeed();
 }
+
 function renderLiveFeed() {
   const container = document.getElementById('liveFeed');
   container.innerHTML = '';
@@ -157,15 +189,61 @@ function renderLiveFeed() {
           <p class="text-sm text-gray-600">Room ${r.room} - ${r.method} - ${r.checkin}</p>
         </div>
         <div class="space-x-2">
-          <button class="bg-blue-500 text-white px-2 py-1 rounded">View</button>
-          <button class="bg-green-500 text-white px-2 py-1 rounded">Confirm</button>
-          <button class="bg-red-500 text-white px-2 py-1 rounded">Cancel</button>
+          <button onclick="viewLiveReservation(${r.id})" class="bg-blue-500 text-white px-2 py-1 rounded">View</button>
+          <button onclick="confirmLiveReservation(${r.id})" class="bg-green-500 text-white px-2 py-1 rounded">Confirm</button>
+          <button onclick="cancelLiveReservation(${r.id})" class="bg-red-500 text-white px-2 py-1 rounded">Cancel</button>
         </div>
       </div>
     `;
   });
 }
 
+
+// View live reservation (same as viewReservation)
+function viewLiveReservation(id) {
+  const r = liveFeed.find(x => x.id === id);
+  if (!r) return;
+  const modal = document.getElementById('detailsModal');
+  const content = document.getElementById('detailsContent');
+  content.innerHTML = `
+    <div class="text-center">
+      <p><strong>ID:</strong> ${r.id}</p>
+      <p><strong>Booking Code:</strong> ${r.bookingcode || "N/A"}</p>
+      <p><strong>Guest Name:</strong> ${r.guest}</p>
+      <p><strong>Room:</strong> ${r.room}</p>
+      <p><strong>Room Type:</strong> ${r.roomType || ""}</p>
+      <p><strong>Check-in:</strong> ${r.checkin}</p>
+      <p><strong>Check-out:</strong> ${r.checkout}</p>
+      <p><strong>Method:</strong> ${r.method}</p>
+      <p><strong>Status:</strong> ${r.status}</p>
+    </div>
+  `;
+  modal.style.display = "flex";
+}
+
+// Confirm live reservation → move to reservations list
+function confirmLiveReservation(id) {
+  const index = liveFeed.findIndex(x => x.id === id);
+  if (index !== -1) {
+    const r = liveFeed[index];
+    r.status = "Confirmed";
+    reservations.push(r);   // add to main reservations list
+    liveFeed.splice(index, 1); // remove from live feed
+    renderTable();
+    renderLiveFeed();
+  }
+}
+
+// Cancel live reservation → remove from live feed
+function cancelLiveReservation(id) {
+  const index = liveFeed.findIndex(x => x.id === id);
+  if (index !== -1) {
+    liveFeed.splice(index, 1); // remove from live feed
+    renderLiveFeed();
+  }
+}
+
+
 // Initialize
 renderTable();
-setInterval(addLiveReservation,3000);
+setInterval(addLiveReservation,2000);
