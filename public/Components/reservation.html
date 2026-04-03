@@ -135,15 +135,36 @@
                 </div>
             </div>
 
-        <!-- Container 3: Live Reservation Feed -->
-        <div class="relative transform -translate-x-177 -translate-y-72 ">
-            <div class="flex justify-center mt-[-200px]">
-                <div class="absolute -top-54 left-180 bg-white p-6 border-2 rounded-3xl  shadow w-[750px] min-h-[450px]">
-                    <h3 class="text-lg font-bold mb-4">Live Reservation Feed</h3>
-                    <div id="liveFeed" class="flex-1 space-y-2 h-full overflow-y-auto"></div>
+          <!-- Container 3: Live Reservation Feed -->
+            <div class="relative transform -translate-x-177 -translate-y-72">
+            <div class="absolute -top-103 left-180 bg-white p-6 border-2 rounded-3xl shadow-sm w-[750px] h-[445px] flex flex-col">
+                <h3 class="text-lg font-bold mb-4">Live Reservation Feed</h3>
+                <div id="liveFeed"
+                    class="space-y-2 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-100 h-[380px]">
+                <!-- Live reservations will be injected here -->
+        
                 </div>
             </div>
-        </div>
+            </div>
+
+            <style>
+            #liveFeed::-webkit-scrollbar {
+                width: 6px;
+            }
+
+            #liveFeed::-webkit-scrollbar-track {
+                background: #f3f4f6; 
+            }
+
+            #liveFeed::-webkit-scrollbar-thumb {
+                background-color: #9ca3af;
+                border-radius: 3px;
+            }
+
+            #liveFeed::-webkit-scrollbar-thumb:hover {
+                background-color: #6b7280; 
+            }
+            </style>
 
         <!-- Container 4: Reservation List -->
         <div class="relative">
