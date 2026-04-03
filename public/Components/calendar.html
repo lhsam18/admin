@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link href="/public/css/output.css" rel="stylesheet">
+   <style>
+    .page { display: none; }
+    .page.active { display: block; }
+   </style>
+   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+   <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+   <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+   <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/main.min.css" rel="stylesheet">
+   
+   <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/main.min.js"></script>
+</head>
+<body class="bg-stone-200 font-sans">
+
+       
+    <div class="flex min-h-screen">
+
+    <!-- Sidebar -->
+    <aside class="fixed top-0 left-0 h-screen w-64 bg-gray-900 text-white flex flex-col">
+      <div class="p-5.5 text-2xl font-bold border-b border-gray-700">Admin</div>
+      <nav class="flex-1 p-6 space-y-2 text-l">
+        <a href="statistics.html" class="block px-4 py-2 rounded hover:bg-gray-700">Dashboard</a>
+        <a href="reservation.html" class="block px-4 py-2 rounded hover:bg-gray-700">Reservations</a>
+        <a href="rooms.htm" class="block px-4 py-2 rounded hover:bg-gray-700">Rooms</a>
+        <a href="payments.html" class="block px-4 py-2 rounded hover:bg-gray-700">Financials</a>
+        <a href="calendar.html" class="block px-4 py-2 rounded hover:bg-gray-700">Calendar</a>
+        <a href="logs.html" class="block px-4 py-2 rounded hover:bg-gray-700">Activity Logs</a>
+      </nav>
+      <div class="p-4 border-t border-gray-700 text-xs text-gray-400">Admin: Lancey</div>
+    </aside>
+
+    <!-- Top Bar -->
+    <header class="flex justify-end items-center bg-gray-300 p-4 shadow fixed top-0 right-0 left-64">
+      <div class="flex items-center space-x-6">
+
+        <!-- Profile -->
+        <div class="flex items-center space-x-2 mr-[120px]">
+          <img src="/public/images/man-face-black-linear-cartoon-icon-user-isolated-white-background-ai-generated_1095381-16809.avif" alt="Profile" class="w-10 h-10 rounded-full">
+          <div class="text-right">
+            <p class="text-l font-bold text-grey-900 mr-[-105px]">Lance Samonte</p>
+            <p class="text-sm text-grey-500 mr-[-35px]">Admin</p>
+          </div>
+        </div>
+
+        <!-- Settings Icon -->
+        <button id="settings-btn"  class="cursor-pointer">
+          <ion-icon name="settings-outline" class="text-2xl text-gray-900 mr-[5px]"></ion-icon>
+        </button>
+        <div id="overlay" class="fixed inset-0 bg-black/50 backdrop-blur-[1px] hidden z-40"></div>
+
+        <!-- Settings Popup -->
+        <div id="settings-popup" 
+             class="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[500px] bg-white rounded-2xl shadow-2xl p-6 hidden transition-transform duration-300 scale-0 z-50 border-2 border-gray-900">
+
+          <!-- Header -->
+          <div class="flex items-center mb-6">
+            <div class="w-12 h-12 flex items-center justify-center border-2 border-gray-800 rounded-full">
+              <ion-icon name="person-circle-outline" class="text-2xl text-gray-800"></ion-icon>
+            </div>
+            <span class="ml-4 text-xl font-semibold text-gray-800">Username ng Admin</span>
+          </div>
+
+          <!-- Change Username -->
+          <div class="mb-4">
+            <label class="block text-gray-700 font-medium mb-1"><ion-icon name="person-circle-outline"></ion-icon> Change Username</label>
+            <input type="text" class="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+          </div>
+          <hr class="my-4">
+
+          <!-- Current Password -->
+          <div class="mb-4">
+            <label class="block text-gray-700 font-medium mb-1"><ion-icon name="lock-closed-outline"></ion-icon> Current Password</label>
+            <input type="password" class="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+          </div>
+
+          <!-- Change Password -->
+          <div class="mb-6">
+            <label class="block text-gray-700 font-medium mb-1"><ion-icon name="lock-open-outline"></ion-icon> Change Password</label>
+            <input type="password" class="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+          </div>
+
+          <!-- Confirm Button -->
+          <button id="confirm-btn" class="bg-green-500 text-white font-semibold py-2 rounded w-full hover:bg-green-400 transition">Confirm</button>
+
+          <!-- Close Button -->
+          <button id="close-settings" 
+                  class="absolute top-5 right-5 w-8 h-8 flex items-center justify-center bg-gray-800 text-white rounded-full hover:bg-gray-600 transition">✕</button>
+
+          <!-- Logout Button -->
+          <div class="absolute top-4 right-4">
+            <button id="logout-btn"
+                    class="bg-red-500 text-white p-2 rounded-full hover:bg-red-400/70 transition flex items-center justify-center">
+              <ion-icon name="log-out-outline" class="text-xl"></ion-icon>
+            </button>
+          </div>
+
+        </div> <!-- end settings-popup -->
+
+        <!-- Logout Popup -->
+        <div id="logout-popup" class="fixed inset-0 hidden z-50 flex items-center justify-center">
+          <div class="bg-white rounded-2xl shadow-2xl p-6 w-[400px] text-center border-2 border-gray-900">
+            <h2 class="text-xl font-semibold text-gray-800 mb-4">Confirm Logout</h2>
+            <p class="text-gray-600 mb-6">Are you sure you want to log out?</p>
+            <div class="flex space-x-3">
+              <button id="cancel-logout" class="flex-1 bg-gray-400 text-white py-2 rounded hover:bg-gray-500 transition">Cancel</button>
+              <a href="/views/index.html" id="confirm-logout" class="flex-1 bg-red-600 text-white py-2 rounded hover:bg-red-700 transition">Logout</a>
+            </div>
+          </div>
+        </div>
+
+      </div> <!-- end flex items-center -->
+    </header>
+
+       <main class="flex-1 ml-64 mt-8 p-6 space-y-10">
+
+    <div id="calendar" class="page active">
+       <div class="flex flex-col gap-6 w-full md:flex-row md:items-start">
+    <!-- Calendar -->
+    <div class="bg-white border-1 rounded-3xl shadow-lg w-[900px] h-[780px] flex flex-col overflow-hidden transition-all duration-300 hover: translate-y-14 translate-x-18 hover:shadow-xl">
+      <!-- Header -->
+      <div class="relative bg-gradient-to-r from-blue-600 to-indigo-500 text-white p-6 text-center">
+        <div class="absolute inset-y-1/2 left-0 right-0 flex justify-between px-4 -translate-y-1/2 z-10">
+          <button id="prev-month" class="w-9 h-9 flex items-center justify-center rounded-full bg-white/20 hover:bg-white/30 transition">
+             <ion-icon name="caret-back-circle-outline" class="text-2xl"></ion-icon>
+          </button>
+          <button id="next-month" class="w-9 h-9 flex items-center justify-center rounded-full bg-white/20 hover:bg-white/30 transition">
+            <ion-icon name="caret-forward-circle-outline" class="text-2xl"></ion-icon>
+          </button>
+        </div>
+        <div id="month-year" class="text-xl font-semibold relative">September 2025</div>
+      </div>
+      <!-- Weekdays -->
+      <div class="grid grid-cols-7 px-4 py-2 bg-blue-100 font-semibold text-blue-600">
+        <div class="text-center">Sun</div>
+        <div class="text-center">Mon</div>
+        <div class="text-center">Tue</div>
+        <div class="text-center">Wed</div>
+        <div class="text-center">Thu</div>
+        <div class="text-center">Fri</div>
+        <div class="text-center">Sat</div>
+      </div>
+      <!-- Days -->
+      <div id="days" class="grid grid-cols-7 gap-1 p-4 flex-1"></div>
+      <!-- Footer -->
+      <div class="flex justify-between items-center border-t border-gray-200 p-4">
+        <button id="today-btn" class="bg-gradient-to-r from-teal-400 to-green-500 text-white px-4 py-2 rounded-full font-medium hover:-translate-y-0.5 hover:shadow-md transition">
+          <i class="fas fa-calendar-day mr-2"></i> Today
+        </button>
+        <div class="flex items-center gap-2 text-teal-500 text-sm">
+          <i class="fas fa-circle text-xs"></i>
+          <span>Has events</span>
+        </div>
+      </div>
+    </div>
+    <!-- Event Panel -->
+    <div id="event-panel" class="bg-white border-1 rounded-3xl  shadow-lg p-6 w-full max-w-[500px] translate-y-14 translate-x-18">
+      <div class="flex justify-between items-center mb-6 pb-4 border-b-2 border-blue-200">
+        <div id="event-date" class="text-xl font-semibold text-blue-600">Select a date</div>
+        <i class="fas fa-calendar-alt text-teal-500 text-lg"></i>
+      </div>
+      <div id="event-list" class="max-h-[350px] overflow-y-auto">
+        <div class="text-center text-gray-500 italic p-8">Select a date with reservations to view them here</div>
+      </div>
+    </div>
+    </div>
+
+    </div>
+    </main>
+    
+</body>
+     <script src="/public/js/settings.js"></script>
+     <script src="/public/js/calendar.js"></script>
+</html>

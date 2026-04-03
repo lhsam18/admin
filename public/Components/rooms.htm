@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link href="/public/css/output.css" rel="stylesheet">
+   <style>
+    .page { display: none; }
+    .page.active { display: block; }
+   </style>
+   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+   <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+   <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+
+</head>
+
+<body class="bg-stone-200 font-sans overflow-x-hidden">
+     <div class="flex min-h-screen">
+
+    <!-- Sidebar -->
+    <aside class="fixed top-0 left-0 h-screen w-64 bg-gray-900 text-white flex flex-col">
+      <div class="p-5.5 text-2xl font-bold border-b border-gray-700"> Admin</div>
+      <nav class="flex-1 p-6 space-y-2 text-l">
+        <a href="statistics.html" class="block px-4 py-2 rounded hover:bg-gray-700" onclick="show('statistics')">Dashboard</a>
+        <a href="reservation.html" class="block px-4 py-2 rounded hover:bg-gray-700" onclick="show('reservations')">Reservations</a>
+        <a href="rooms.htm" class="block px-4 py-2 rounded hover:bg-gray-700" onclick="show('rooms')">Rooms</a>
+        <a href="payments.html" class="block px-4 py-2 rounded hover:bg-gray-700" onclick="show('payments')">Financials</a>
+        <a href="calendar.html" class="block px-4 py-2 rounded hover:bg-gray-700" onclick="show('calendar')">Calendar</a>
+        <a href="logs.html" class="block px-4 py-2 rounded hover:bg-gray-700" onclick="show('logs')">Activity Logs</a>
+      </nav>
+      <div class="p-4 border-t border-gray-700 text-xs text-gray-400">Admin: Lancey</div>
+    </aside>
+
+    <!-- Top Bar -->
+    <header class="flex justify-end items-center bg-gray-300 p-4 shadow fixed top-0 right-0 left-64">
+      <div class="flex items-center space-x-6">
+
+        <!-- Profile -->
+            <div class="flex items-center space-x-2 mr-[120px]">
+                <img src="/public/images/man-face-black-linear-cartoon-icon-user-isolated-white-background-ai-generated_1095381-16809.avif" alt="Profile" class="w-10 h-10 rounded-full">
+                <div class="text-right">
+                <p class="text-l font-bold text-grey-900 mr-[-105px]">Lance Samonte</p>
+                <p class="text-sm text-grey-500 mr-[-35px]">Admin</p>
+            </div>
+            </div>
+
+        <!-- Settings Icon -->
+            <button id="settings-btn" class="cursor-pointer">
+                <ion-icon name="settings-outline" class="text-2xl text-gray-900 mr-[5px]"></ion-icon>
+                </button>
+            <div id="overlay" class="fixed inset-0 bg-black/50 backdrop-blur-[1px] hidden z-40"></div>
+
+        <!-- Settings Popup -->
+            <div id="settings-popup" 
+                class="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[500px] bg-white rounded-2xl shadow-2xl p-6 hidden transition-transform duration-300 scale-0 z-50 rounded-2xl border-2 border-gray-900">
+
+        <!-- Header -->
+            <div class="flex items-center mb-6">
+                <div class="w-12 h-12 flex items-center justify-center border-2 border-gray-800 rounded-full">
+                <ion-icon name="person-circle-outline" class="text-2xl text-gray-800"></ion-icon>
+                </div>
+                <span class="ml-4 text-xl font-semibold text-gray-800">Username ng Admin</span>
+            </div>
+
+        <!-- Change Username -->
+            <div class="mb-4">
+                <label class="block text-gray-700 font-medium mb-1"><ion-icon name="person-circle-outline"></ion-icon> Change Username</label>
+                <input type="text" class="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+            </div>
+        <hr class="my-4">
+
+        <!-- Current Password -->
+            <div class="mb-4">
+                <label class="block text-gray-700 font-medium mb-1"><ion-icon name="lock-closed-outline"></ion-icon> Current Password</label>
+                <input type="password" class="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+            </div>
+
+        <!-- Change Password -->
+            <div class="mb-6">
+                <label class="block text-gray-700 font-medium mb-1"><ion-icon name="lock-open-outline"></ion-icon> Change Password</label>
+                <input type="password" class="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+            </div>
+
+        <!-- Confirm Button -->
+            <button id="confirm-btn" class="bg-green-500 text-white font-semibold py-2 rounded w-full hover:bg-green-400 transition cursor-pointer"> Confirm </button>
+
+        <!-- Close Button -->
+            <button id="close-settings" 
+                class="absolute top-5 right-5 w-8 h-8 flex items-center justify-center bg-gray-800 text-white rounded-full hover:bg-gray-600 transition cursor-pointer"> ✕ </button>
+
+        <!-- Logout Button -->
+            <div class="absolute top-4.5 right-15">
+                <button id="logout-btn"
+                 class="bg-red-500 text-white p-2 rounded-full hover:bg-red-400/70 transition flex items-center justify-center cursor-pointer"> <ion-icon name="log-out-outline" class="text-xl"></ion-icon> </button>
+            </div>
+
+        <!-- Logout Popup (hidden by default) -->
+            <div id="logout-popup" 
+                class="fixed inset-0 hidden z-50 flex items-center justify-center">
+            <div class="bg-white rounded-2xl shadow-2xl p-6 w-[400px] text-center border-2 border-gray-900">
+                <h2 class="text-xl font-semibold text-gray-800 mb-4">Confirm Logout</h2>
+                <p class="text-gray-600 mb-6">Are you sure you want to log out?</p>
+            <div class="flex space-x-3">
+                <button id="cancel-logout" class="flex-1 bg-gray-400 text-white py-2 rounded hover:bg-gray-500 transition cursor-pointer"> Cancel </button>
+                <a href="/views/index.html" id="confirm-logout" class="flex-1 bg-red-600 text-white py-2 rounded hover:bg-red-700 transition cursor-pointer"> Logout </a>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+      </div>
+    </header>
+
+    <main class="ml-[480px] pt-[50px] px-6">
+       <!-- Add Room Button -->
+        <div class="flex flex-col items-center mt-6">
+          <h2 class="relative inline-block text-5xl font-extrabold bg-gradient-to-r from-gray-900 to-gray-600 bg-clip-text text-transparent mb-6 mt-15 drop-shadow-lg flex items-center justify-center gap-2">
+       <!-- Icon -->
+         <ion-icon name="business-outline" class="text-gray-900 text-4xl"></ion-icon> Room Management
+            <span class="absolute left-0 -bottom-2 w-full h-1 bg-gradient-to-r from-gray-900 to-gray-600 rounded"></span> </h2>
+
+       <!-- Button (content-sized) -->
+        <button id="add-room-btn"
+          class="bg-gradient-to-r from-green-500 to-green-500 text-white px-6 py-2 border-1 rounded-3xl  font-semibold hover:shadow-md transition mt-5 cursor-pointer"> ADD ROOM </button>
+        </div>
+
+      <!-- Overlay -->
+        <div id="room-overlay" class="fixed inset-0 bg-black/50 backdrop-blur-[1px] hidden z-40 border-1 rounded-3xl "></div>
+
+      <!-- Add Room Popup -->
+        <div id="add-room-popup" 
+          class="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[800px] bg-white border-2 rounded-3xl  shadow-2xl p-6 hidden transition-transform duration-300 scale-0 z-50">
+
+      <!-- Close Button -->
+        <button id="close-room-popup" class="absolute top-5 right-7 w-8 h-8 flex items-center justify-center bg-gray-800 text-white rounded-full hover:bg-gray-600 transition cursor-pointer"> ✕ </button>
+
+      <!-- Create Room Form -->
+        <h2 class="text-2xl font-bold text-gray-800 mb-6 ">Create Room</h2>
+        <form id="create-room-form" class="flex flex-col gap-4">
+
+      <!-- Room Type -->
+        <div>
+          <label class="block text-gray-700 font-medium mb-2 flex items-center gap-2">
+          <ion-icon name="diamond"></ion-icon> Room Type </label>
+
+        <div class="flex items-center gap-3">
+          <input id="room-type" type="text" placeholder="Enter room type"
+              class="w-[600px] border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none cursor-pointer">
+
+      <!-- Occupancy buttons -->
+        <div class="flex gap-2">
+          <button type="button" class="occupancy-btn bg-gray-200 text-gray-800 px-3 py-2 rounded-3xl border-1 hover:bg-gray-300 transition cursor-pointer"
+                  data-occupancy="single">Single</button>
+          <button type="button" class="occupancy-btn bg-gray-200 text-gray-800 px-3 py-2 rounded-3xl border-1 hover:bg-gray-300 transition cursor-pointer"
+                  data-occupancy="double">Double</button>
+          </div>
+        </div>
+          <input type="hidden" id="room-occupancy" name="room_occupancy" value="single">
+        </div>
+
+      <!-- Room Price -->
+        <div>
+          <label class="block text-gray-700 font-medium mb-2">
+          <ion-icon name="pricetag"></ion-icon> Room Price
+        </label>
+
+        <div class="relative">
+          <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-600 font-bold">₱</span>
+          <input id="room-price" type="text" placeholder="Enter room price"
+                class="w-full border border-gray-300 rounded-lg pl-8 pr-4 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none cursor-pointer">
+        </div>
+      </div>
+
+      <!-- Room Description -->
+        <div>
+          <label class="block text-gray-700 font-medium mb-2"><ion-icon name="bookmark"></ion-icon> Room Description</label>
+          <textarea id="room-desc" placeholder="Enter room description"
+                    class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none cursor-pointer"></textarea>
+        </div>
+      <!-- Room Picture -->
+        <div>
+          <label class="block text-gray-700 font-medium mb-2"><ion-icon name="image"></ion-icon> Room Picture</label>
+          <input id="room-pic" type="file" accept="image/*"
+                class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none cursor-pointer">
+        </div>
+      <!-- Submit -->
+        <button type="submit"
+                class="bg-gradient-to-r from-blue-600 to-indigo-500 text-white px-6 py-2 rounded-lg font-semibold hover:shadow-md transition cursor-pointer">
+          Create Room
+        </button>
+    </form>
+  </div>
+
+    <!-- Existing Rooms -->
+      <div id="room-container" class="grid grid-cols-3 justify-items-center gap-x-4 gap-y-6 mt-10 px-6 mx-auto max-w-[1100px]">
+        <!-- Standard Room -->
+        <div class="bg-white border-1 rounded-3xl shadow-lg p-6 w-full max-w-[350px] h-[400px] flex flex-col items-center">
+          <div class="w-full h-[150px] bg-gray-200 rounded-lg mb-4 flex items-center justify-center text-gray-500">
+            <img src="/public/images/standard.jpg" alt="Standard Room" class="w-full h-full object-cover rounded-lg" />
+          </div>
+          <div class="text-center">
+            <h3 class="text-lg font-bold text-gray-800 mb-2">Standard Room (Single)</h3>
+            <h2 class="text-lg font-bold text-green-600 mb-2">₱ 1,800</h2>
+            <p class="text-gray-600 mb-4">Affordable comfort with essential amenities.</p>
+          </div>
+          <div class="flex gap-3">
+            <button class="edit-btn bg-blue-500 text-white px-4 py-2 border-1 rounded-3xl hover:bg-blue-600 transition cursor-pointer">Edit</button>
+            <button class="delete-btn bg-red-500 text-white px-4 py-2 border-1 rounded-3xl hover:bg-red-600 transition cursor-pointer">Delete</button>
+          </div>
+      </div>
+
+    <!-- Deluxe Room -->
+      <div class="bg-white border-1 rounded-3xl  shadow-lg p-6 w-full max-w-[350px] h-[400px] flex flex-col items-center">
+        <div class="w-full h-[150px] bg-gray-200 rounded-lg mb-4 flex items-center justify-center text-gray-500">
+          <img src="/public/images/deluxe.jpg" alt="Deluxe Room" class="w-full h-full object-cover rounded-lg" />
+        </div>
+        <div class="text-center">
+          <h3 class="text-lg font-bold text-gray-800 mb-2">Deluxe Room (Single)</h3>
+          <h2 class="text-lg font-bold text-green-600  mb-2">₱ 2,300</h2>
+          <p class="text-gray-600 mb-4">Spacious room that has all the premium features.</p>
+        </div>
+        <div class="flex gap-3">
+          <button class="edit-btn bg-blue-500 text-white px-4 py-2 border-1 rounded-3xl hover:bg-blue-600 transition cursor-pointer">Edit</button>
+          <button class="delete-btn bg-red-500 text-white px-4 py-2 border-1 rounded-3xl hover:bg-red-600 transition cursor-pointer">Delete</button>
+        </div>
+      </div>
+
+    <!-- Suite Room -->
+      <div class="bg-white border-1 rounded-3xl shadow-lg p-6 w-full max-w-[350px] h-[400px] flex flex-col items-center">
+        <div class="w-full h-[150px] bg-gray-200 rounded-lg mb-4 flex items-center justify-center text-gray-500">
+          <img src="/public/images/suite.jpg" alt="Suite Room" class="w-full h-full object-cover rounded-lg" />
+        </div>
+        <div class="text-center">
+          <h3 class="text-lg font-bold text-gray-800 mb-2">Suite Room (Single)</h3>
+          <h2 class="text-lg font-bold text-green-600  mb-2">₱ 3,000</h2>
+          <p class="text-gray-600 mb-4">Luxury suite with the ultimate top-class amenities.</p>
+        </div>
+        <div class="flex gap-3">
+          <button class="edit-btn bg-blue-500 text-white px-4 py-2 border-1 rounded-3xl hover:bg-blue-600 transition cursor-pointer">Edit</button>
+          <button class="delete-btn bg-red-500 text-white px-4 py-2 border-1 rounded-3xl hover:bg-red-600 transition cursor-pointer">Delete</button>
+        </div>
+      </div>
+
+    <!-- Standard Room -->
+      <div class="bg-white border-1 rounded-3xl shadow-lg p-6 w-full max-w-[350px] h-[400px] flex flex-col items-center">
+        <div class="w-full h-[150px] bg-gray-200 rounded-lg mb-4 flex items-center justify-center text-gray-500">
+          <img src="/public/images/standard.jpg" alt="Standard Room" class="w-full h-full object-cover rounded-lg" />
+        </div>
+        <div class="text-center">
+          <h3 class="text-lg font-bold text-gray-800 mb-2">Standard Room (Double)</h3>
+          <h2 class="text-lg font-bold text-green-600 mb-2">₱ 2,700</h2>
+          <p class="text-gray-600 mb-4">Affordable comfort with essential amenities.</p>
+        </div>
+        <div class="flex gap-3">
+          <button class="edit-btn bg-blue-500 text-white px-4 py-2 border-1 rounded-3xl hover:bg-blue-600 transition cursor-pointer">Edit</button>
+          <button class="delete-btn bg-red-500 text-white px-4 py-2 border-1 rounded-3xl hover:bg-red-600 transition cursor-pointer">Delete</button>
+        </div>
+      </div>
+
+    <!-- Deluxe Room -->
+      <div class="bg-white border-1 rounded-3xl  shadow-lg p-6 w-full max-w-[350px] h-[400px] flex flex-col items-center">
+        <div class="w-full h-[150px] bg-gray-200 rounded-lg mb-4 flex items-center justify-center text-gray-500">
+          <img src="/public/images/deluxe.jpg" alt="Deluxe Room" class="w-full h-full object-cover rounded-lg" />
+        </div>
+        <div class="text-center">
+          <h3 class="text-lg font-bold text-gray-800 mb-2">Deluxe Room (Double)</h3>
+          <h2 class="text-lg font-bold text-green-600  mb-2">₱ 3,200</h2>
+          <p class="text-gray-600 mb-4">Spacious room that has all the premium features.</p>
+        </div>
+        <div class="flex gap-3">
+          <button class="edit-btn bg-blue-500 text-white px-4 py-2 border-1 rounded-3xl hover:bg-blue-600 transition cursor-pointer">Edit</button>
+          <button class="delete-btn bg-red-500 text-white px-4 py-2 border-1 rounded-3xl hover:bg-red-600 transition cursor-pointer">Delete</button>
+        </div>
+      </div>
+
+    <!-- Suite Room -->
+      <div class="bg-white border-1 rounded-3xl  shadow-lg p-6 w-full max-w-[350px] h-[400px] flex flex-col items-center">
+        <div class="w-full h-[150px] bg-gray-200 rounded-lg mb-4 flex items-center justify-center text-gray-500">
+          <img src="/public/images/suite.jpg" alt="Deluxe Room" class="w-full h-full object-cover rounded-lg" />
+        </div>
+        <div class="text-center">
+          <h3 class="text-lg font-bold text-gray-800 mb-2">Suite Room (Double)</h3>
+          <h2 class="text-lg font-bold text-green-600  mb-2">₱ 4,000</h2>
+          <p class="text-gray-600 mb-4">Luxury suite with the ultimate top-class amenities.</p>
+        </div>
+        <div class="flex gap-3">
+          <button class="edit-btn bg-blue-500 text-white px-4 py-2 border-1 rounded-3xl hover:bg-blue-600 transition cursor-pointer">Edit</button>
+          <button class="delete-btn bg-red-500 text-white px-4 py-2 border-1 rounded-3xl hover:bg-red-600 transition cursor-pointer">Delete</button>
+        </div>
+      </div>
+</div>
+
+    <!-- Delete Confirmation Popup -->
+      <div id="delete-popup" 
+          class="fixed inset-0 hidden z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
+        <div class="bg-white rounded-2xl shadow-2xl p-6 w-[400px] text-center border-2 border-gray-900">
+          <h2 class="text-xl font-semibold text-gray-800 mb-4">Confirm Delete</h2>
+          <p class="text-gray-600 mb-6">Are you sure you want to delete this room?</p>
+          <div class="flex gap-3">
+            <button id="cancel-delete" 
+                    class="flex-1 bg-gray-400 text-white py-2 rounded hover:bg-gray-500 transition cursor-pointer">
+              Cancel
+            </button>
+            <button id="confirm-delete" 
+                    class="flex-1 bg-red-600 text-white py-2 rounded hover:bg-red-700 transition cursor-pointer">
+              Delete
+            </button>
+          </div>
+        </div>
+      </div>
+  </main>
+</body>
+     <script src="/public/js/rooms.js"></script>
+     <script src="/public/js/settings.js"></script>
+</html>

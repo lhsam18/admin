@@ -32,9 +32,9 @@ function renderTable(data = reservations) {
         <td class="border p-2 text-center">${statusBadge(r.status)}</td>
         <td class="border p-2">
           <div class="flex justify-center space-x-2">
-            <button onclick="viewReservation(${r.id})" class="bg-blue-500 text-white px-2 py-1 rounded">View</button>
-            <button onclick="editReservation(${r.id})" class="bg-yellow-500 text-white px-2 py-1 rounded">Edit</button>
-            <button onclick="cancelReservation(${r.id})" class="bg-red-500 text-white px-2 py-1 rounded">Cancel</button>
+            <button onclick="viewReservation(${r.id})" class="bg-blue-500 text-white px-2 py-1 rounded cursor-pointer">View</button>
+            <button onclick="editReservation(${r.id})" class="bg-yellow-500 text-white px-2 py-1 rounded cursor-pointer">Edit</button>
+            <button onclick="cancelReservation(${r.id})" class="bg-red-500 text-white px-2 py-1 rounded cursor-pointer">Cancel</button>
           </div>
         </td>
       </tr>
@@ -189,9 +189,9 @@ function renderLiveFeed() {
           <p class="text-sm text-gray-600">Room ${r.room} - ${r.method} - ${r.checkin}</p>
         </div>
         <div class="space-x-2">
-          <button onclick="viewLiveReservation(${r.id})" class="bg-blue-500 text-white px-2 py-1 rounded">View</button>
-          <button onclick="confirmLiveReservation(${r.id})" class="bg-green-500 text-white px-2 py-1 rounded">Confirm</button>
-          <button onclick="cancelLiveReservation(${r.id})" class="bg-red-500 text-white px-2 py-1 rounded">Cancel</button>
+          <button onclick="viewLiveReservation(${r.id})" class="bg-blue-500 text-white px-2 py-1 rounded cursor-pointer">View</button>
+          <button onclick="confirmLiveReservation(${r.id})" class="bg-green-500 text-white px-2 py-1 rounded cursor-pointer">Confirm</button>
+          <button onclick="cancelLiveReservation(${r.id})" class="bg-red-500 text-white px-2 py-1 rounded cursor-pointer">Cancel</button>
         </div>
       </div>
     `;

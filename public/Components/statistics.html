@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+   <link href="/public/css/output.css" rel="stylesheet">
+   <style>
+    .page { display: none; }
+    .page.active { display: block; }
+   </style>
+   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+   <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+   <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+
+</head>
+
+<body class="bg-stone-200 font-sans">
+
+    <div class="flex min-h-screen">
+
+    <!-- Sidebar -->
+    <aside class="fixed top-0 left-0 h-screen w-64 bg-gray-900 text-white flex flex-col">
+      <div class="p-5.5 text-2xl font-bold border-b border-gray-700"> Admin</div>
+      <nav class="flex-1 p-6 space-y-2 text-l">
+        <a href="statistics.html" class="block px-4 py-2 rounded hover:bg-gray-700" onclick="show('statistics')">Dashboard</a>
+        <a href="reservation.html" class="block px-4 py-2 rounded hover:bg-gray-700" onclick="show('reservations')">Reservations</a>
+        <a href="rooms.htm" class="block px-4 py-2 rounded hover:bg-gray-700" onclick="show('rooms')">Rooms</a>
+        <a href="payments.html" class="block px-4 py-2 rounded hover:bg-gray-700" onclick="show('payments')">Financials</a>
+        <a href="calendar.html" class="block px-4 py-2 rounded hover:bg-gray-700" onclick="show('calendar')">Calendar</a>
+        <a href="logs.html" class="block px-4 py-2 rounded hover:bg-gray-700" onclick="show('logs')">Activity Logs</a>
+      </nav>
+      <div class="p-4 border-t border-gray-700 text-xs text-gray-400">Admin: Lancey</div>
+    </aside>
+
+    <!-- Top Bar -->
+    <header class="flex justify-end items-center bg-gray-300 p-4 shadow fixed top-0 right-0 left-64">
+      <div class="flex items-center space-x-6">
+
+        <!-- Profile -->
+            <div class="flex items-center space-x-2 mr-[120px]">
+                <img src="/public/images/man-face-black-linear-cartoon-icon-user-isolated-white-background-ai-generated_1095381-16809.avif" alt="Profile" class="w-10 h-10 rounded-full">
+                <div class="text-right">
+                <p class="text-l font-bold text-grey-900 mr-[-105px]">Lance Samonte</p>
+                <p class="text-sm text-grey-500 mr-[-35px]">Admin</p>
+            </div>
+            </div>
+
+        <!-- Settings Icon -->
+            <button id="settings-btn"  class="cursor-pointer">
+                <ion-icon name="settings-outline" class="text-2xl text-gray-900 mr-[5px]"></ion-icon>
+                </button>
+            <div id="overlay" class="fixed inset-0 bg-black/50 backdrop-blur-[1px] hidden z-40"></div>
+
+        <!-- Settings Popup -->
+            <div id="settings-popup" 
+                class="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[500px] bg-white rounded-2xl shadow-2xl p-6 hidden transition-transform duration-300 scale-0 z-50 rounded-2xl border-2 border-gray-900">
+
+        <!-- Header -->
+            <div class="flex items-center mb-6">
+                <div class="w-12 h-12 flex items-center justify-center border-2 border-gray-800 rounded-full">
+                <ion-icon name="person-circle-outline" class="text-2xl text-gray-800"></ion-icon>
+                </div>
+                <span class="ml-4 text-xl font-semibold text-gray-800">Username ng Admin</span>
+            </div>
+
+        <!-- Change Username -->
+            <div class="mb-4">
+                <label class="block text-gray-700 font-medium mb-1"><ion-icon name="person-circle-outline"></ion-icon> Change Username</label>
+                <input type="text" class="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+            </div>
+        <hr class="my-4">
+
+        <!-- Current Password -->
+            <div class="mb-4">
+                <label class="block text-gray-700 font-medium mb-1"><ion-icon name="lock-closed-outline"></ion-icon> Current Password</label>
+                <input type="password" class="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+            </div>
+
+        <!-- Change Password -->
+            <div class="mb-6">
+                <label class="block text-gray-700 font-medium mb-1"><ion-icon name="lock-open-outline"></ion-icon> Change Password</label>
+                <input type="password" class="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+            </div>
+
+        <!-- Confirm Button -->
+            <button id="confirm-btn" class="bg-green-500 text-white font-semibold py-2 rounded w-full hover:bg-green-400 transition cursor-pointer"> Confirm </button>
+
+        <!-- Close Button -->
+            <button id="close-settings" 
+                class="absolute top-5 right-5 w-8 h-8 flex items-center justify-center bg-gray-800 text-white rounded-full hover:bg-gray-600 transition cursor-pointer"> ✕ </button>
+
+        <!-- Logout Button -->
+            <div class="absolute top-4.5 right-15">
+                <button id="logout-btn"
+                 class="bg-red-500 text-white p-2 rounded-full hover:bg-red-400/70 transition flex items-center justify-center cursor-pointer "> <ion-icon name="log-out-outline" class="text-xl"></ion-icon> </button>
+            </div>
+
+        <!-- Logout Popup (hidden by default) -->
+            <div id="logout-popup" 
+                class="fixed inset-0 hidden z-50 flex items-center justify-center">
+            <div class="bg-white rounded-2xl shadow-2xl p-6 w-[400px] text-center border-2 border-gray-900">
+                <h2 class="text-xl font-semibold text-gray-800 mb-4">Confirm Logout</h2>
+                <p class="text-gray-600 mb-6">Are you sure you want to log out?</p>
+            <div class="flex space-x-3">
+                <button id="cancel-logout" class="flex-1 bg-gray-400 text-white py-2 rounded hover:bg-gray-500 transition cursor-pointer"> Cancel </button>
+                <a href="/views/index.html" id="confirm-logout" class="flex-1 bg-red-600 text-white py-2 rounded hover:bg-red-700 transition cursor-pointer"> Logout </a>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+      </div>
+    </header>
+
+        <!-- Main Content -->
+    <main class="flex-1 p-6 ml-64"> 
+    <!-- Quick Statistics -->
+      <div id="statistics" class="page active space-y-6">
+        <h2 class="text-xl font-bold text-grey-900">Dashboard</h2>
+        <div class="grid grid-cols-4 gap-6 mt-[60px]">
+          <div class="bg-white p-4  shadow  h-[110px] border-1 rounded-3xl"><p class="text-sm text-gray-500 text-center">New Bookings</p><p class="text-2xl font-bold text-center">840 <span class="text-green-500 text-sm text-center">↑ 8.7%</span></p></div>
+          <div class="bg-white p-4 shadow border-1 rounded-3xl"><p class="text-sm text-gray-500 text-center">Check-In</p><p class="text-2xl font-bold text-center">231 <span class="text-green-500 text-sm text-center">↑ 3.56%</span></p></div>
+          <div class="bg-white p-4  shadow border-1 rounded-3xl"><p class="text-sm text-gray-500 text-center">Check-Out</p><p class="text-2xl font-bold text-center">124 <span class="text-red-500 text-sm text-center">↓ 1.06%</span></p></div>
+          <div class="bg-gray-700 p-4  shadow border-1 rounded-3xl"><p class="text-sm text-white text-center">Total Revenue</p><p class="text-2xl text-white font-bold text-center">₱123,980 <span class="text-green-500 text-sm text-center">↑ 5.7%</span></p></div>
+        </div>
+
+        <div class="bg-white p-6 rounded-lg shadow border-2 rounded-3xl">
+          <h3 class="text-lg font-bold mb-4 text-gray-800 text-center">Room Availability</h3>
+        <div class="grid grid-cols-4 gap-6 text-center">
+          <div class="bg-gray-50 p-4 border-1 rounded-3xl">
+             <p class="text-sm text-gray-500">Occupied</p>
+             <p class="text-2xl font-bold text-gray-800">286</p>
+          </div>
+           <div class="bg-gray-50 p-4 border-1 rounded-3xl">
+             <p class="text-sm text-gray-500">Reserved</p>
+             <p class="text-2xl font-bold text-gray-800">87</p>
+          </div>
+         <div class="bg-green-500 p-4 rounded-3xl">
+             <p class="text-sm text-white">Available</p>
+             <p class="text-2xl font-bold text-white">32</p>
+          </div>
+          <div class="bg-red-500 p-4 rounded-3xl">
+            <p class="text-sm text-white">Not Ready</p>
+             <p class="text-2xl font-bold text-white">13</p>
+        </div>
+        </div> </div>
+
+        <div class="grid grid-cols-3 gap-6">
+          <div class="bg-white p-6 border-1 rounded-3xl shadow">
+            <h3 class="text-lg font-bold mb-4 text-gray-800">Reservations (Last 7 Days)</h3>
+            <canvas id="reservationChart"></canvas>
+          </div>
+          <div class="bg-white p-6 border-1 rounded-3xl  shadow">
+            <h3 class="text-lg font-bold mb-4 text-gray-800">Reservations (This Month)</h3>
+            <canvas id="monthChart"></canvas>
+            </div>
+          <div class="bg-white p-6 border-1 rounded-3xl  shadow">
+            <h3 class="text-lg font-bold mb-4 text-gray-800">Revenue (Last 6 Months)</h3>
+            <canvas id="revenueChart"></canvas>
+          </div>
+          
+        </div>
+
+        <div class="flex justify-between">
+
+          <div class="bg-white p-6 border-2 rounded-3xl  shadow w-[765px] h-[340px] ml-[1px] inline-block">
+            <h3 class="text-lg font-bold mb-4 text-gray-800">Booking by Platform</h3>
+            <canvas id="platformChart"></canvas>
+          </div>
+
+          <!-- Top Performing Room Types -->
+          <div>
+            <div class="bg-white p-6 border-2 rounded-3xl  shadow w-[765px] h-[340px]">
+              <h3 class="text-lg font-bold mb-4 text-center">Top Performing Room Types</h3>
+              <canvas id="roomTypesChart"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+      </main>
+</body>
+     <script src="/public/js/statistics.js"></script>
+     <script src="/public/js/settings.js"></script>
+</html>
